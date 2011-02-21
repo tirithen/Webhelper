@@ -9,7 +9,7 @@ var	watch = require('./watcher').watch,
 	hasOwn = Object.prototype.hasOwnProperty,
 	args = require('./arguments').get;
 
-function notifyUbuntuNotifySend(title, message) {
+function notifyNotifySend(title, message) {
 	exec('notify-send "' + escapeQuote(title) + '" "' + escapeQuote(message) + '"');
 }
 
@@ -30,15 +30,15 @@ function getLocalFilename(filename) {
 }
 
 function notify(title, message) {
-	if(args.verbose) {
+	if(args['verbose']) {
 		sys.puts(title + '\n' + message);
 	}
 
-	if(args.ubuntu) {
-		notifyUbuntuNotifySend(title, message);
+	if(args['notify-send']) {
+		notifyNotifySend(title, message);
 	}
 
-	if(args.growl) {
+	if(args['growl']) {
 		notifyGrowl(title, message);
 	}
 }
@@ -106,18 +106,18 @@ function compassCompile(folder) {
 	});
 }
 
-if(!args.folder || args.folder === true) {
-	args.folder = __dirname;
+if(!args['folder'] || args['folder'] === true) {
+	args['folder'] = __dirname;
 }
 
-if(!args.folder.match(/\/$/)) {
-	args.folder += '/';
+if(!args['folder'].match(/\/$/)) {
+	args['folder'] += '/';
 }
 
 if(args['check-js']) {
 	watch({
 		extensions: ['js'],
-		folder: args.folder,
+		folder: args['folder'],
 		noCheckOnAdd: args['no-check-on-add'],
 		callback: function(filename) {
 			jsCheck(filename);
@@ -128,7 +128,7 @@ if(args['check-js']) {
 if(args['check-php']) {
 	watch({
 		extensions: ['php'],
-		folder: args.folder,
+		folder: args['folder'],
 		noCheckOnAdd: args['no-check-on-add'],
 		callback: function(filename) {
 			phpCheck(filename);
@@ -139,10 +139,10 @@ if(args['check-php']) {
 if(args['compass']) {
 	watch({
 		extensions: ['scss', 'sass'],
-		folder: args.folder,
+		folder: args['folder'],
 		noCheckOnAdd: args['no-check-on-add'],
 		callback: function() {
-			compassCompile(args.folder);
+			compassCompile(args['folder']);
 		}
 	});
 }
